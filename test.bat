@@ -1,0 +1,1 @@
+java -jar com.centric.infomodel.jar "C:/Users/jeff.kanel/Temporary/Untitled.mdj" "C:/Users/jeff.kanel/Temporary/target/AXCESS Financial Business Information Mdoel.html" "C:/Users/jeff.kanel/AppData/Roaming/StarUML/extensions/user/centric.information-model/centric.infomodel.xslt"
