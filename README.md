@@ -18,4 +18,5 @@ arg[2] = Absolute path of the Xslt transformation file.
 
 # Other Notes
 1. The folder path for the Html file is used to create an identically named Xml file.
+
 2. Windows file paths are automatlically normalized to used the correct path delimiters.  Forwardslash is replaced with backslash on Windows platforms.
