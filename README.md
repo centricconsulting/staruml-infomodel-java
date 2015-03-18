@@ -11,7 +11,9 @@ java -jar com.centric.infomodel.jar "c:/test/myproject.mdj" "c:/target/mydocumen
 
 # Arguments
 arg[0] = Absolute path of the StarUML project file (*.mdj)
+
 arg[1] = Absolute path of the target Html file.  
+
 arg[2] = Absolute path of the Xslt transformation file.
 
 # Other Notes
