@@ -50,17 +50,17 @@ public class Application {
     		
     		if(args[n].equals("-p"))
     		{
-       			JsonFilePath = Application.getOptionFilePath("source", args[n+1]);       			
+       			JsonFilePath = Application.getOptionFilePath("source", args[n+1], true);       			
     			n++;  // advance the arg counter
     			
     		} else if(args[n].equals("-t"))
     		{
-    			TargetFilePath = Application.getOptionFilePath("target", args[n+1]);
+    			TargetFilePath = Application.getOptionFilePath("target", args[n+1], false);
     			n++;  // advance the arg counter    			
     			
     		} else if(args[n].equals("-x"))
     		{
-    			XsltFilePath = Application.getOptionFilePath("xsl template", args[n+1]);
+    			XsltFilePath = Application.getOptionFilePath("xsl template", args[n+1], true);
     			n++;  // advance the arg counter
     		    		
     		} else if(args[n].equals("-g"))
@@ -69,7 +69,7 @@ public class Application {
     			
     		} else if(args[n].equals("-m"))
     		{
-    			XmlFilePath = Application.getOptionFilePath("xsl template", args[n+1]);    			
+    			XmlFilePath = Application.getOptionFilePath("xml file", args[n+1], false);    			
     			generateXml = true; // force the xml generation
     			n++;  // advance the arg counter
     		}
@@ -105,7 +105,7 @@ public class Application {
 		}	
 	}
     
-    private static String getOptionFilePath(String context, String path)
+    private static String getOptionFilePath(String context, String path, boolean fileMustExist)
     {
     	
     	String resultPath = null;
@@ -116,7 +116,7 @@ public class Application {
     		resultPath = normalizePath(path);
     		File f = new File(resultPath);
     		
-    		if(!f.exists())
+    		if(fileMustExist && !f.exists())
     		{
     			throw new IllegalArgumentException("The " + context + " file \"" + path + "\" does not exist.");
     		} else if (f.isDirectory()) {
