@@ -27,71 +27,55 @@ import com.centric.infomodel.structure.Project;
 public class Application {
 
     public static void main(String[] args) throws IOException, ParserConfigurationException, TransformerException  {
-		
-    	String JsonFilePath, HtmlFilePath, XsltFilePath;
     	
-    	if(args.length <3)
+    	/*
+    	 * -p "{Source StarUML Project Json File Path}"
+    	 * -t "{Target File Path}"
+    	 * -x "{Xslt File Path}"
+    	 * -g Inclusion will generate Xml file. Same name and folder path as target will be used unless explicit path is provided.
+    	 * -m (optional) Explicit "{Xml File Path}"
+    	 */
+    	
+    	String
+    		JsonFilePath = null,
+    		TargetFilePath = null,
+    		XsltFilePath = null,
+    		XmlFilePath = null;
+    	
+    	
+    	boolean generateXml = false;
+    	
+    	for (int n = 0; n < args.length; n++)
     	{
-    		throw new IllegalArgumentException("Insufficient argements were provided on the command line.");
-    	}
-    	    	
-    	// argument inputs
-    	try
-    	{
-    		JsonFilePath = normalizePath(args[0]);
-    		File f = new File(JsonFilePath);
     		
-    		if(!f.exists())
+    		if(args[n].equals("-p"))
     		{
-    			throw new IllegalArgumentException("The source file \"" + args[0] + "\" does not exist.");
-    		} else if (f.isDirectory()) {
-    			throw new IllegalArgumentException("The source file \"" + args[0] + "\" is not a valid file.");
+       			JsonFilePath = Application.getOptionFilePath("source", args[n+1]);       			
+    			n++;  // advance the arg counter
+    			
+    		} else if(args[n].equals("-t"))
+    		{
+    			TargetFilePath = Application.getOptionFilePath("target", args[n+1]);
+    			n++;  // advance the arg counter    			
+    			
+    		} else if(args[n].equals("-x"))
+    		{
+    			XsltFilePath = Application.getOptionFilePath("xsl template", args[n+1]);
+    			n++;  // advance the arg counter
+    		    		
+    		} else if(args[n].equals("-g"))
+    		{
+    			generateXml = true;
+    			
+    		} else if(args[n].equals("-m"))
+    		{
+    			XmlFilePath = Application.getOptionFilePath("xsl template", args[n+1]);    			
+    			generateXml = true; // force the xml generation
+    			n++;  // advance the arg counter
     		}
-    	} catch (Exception e) {
-    		throw new IllegalArgumentException("The source file \"" + args[0] + "\" is invalid. " + e.getMessage());
+    		    		
     	}
-		
-    	
-    	// argument inputs
-    	try
-    	{
-    		HtmlFilePath = normalizePath(args[1]);
-    		File f = new File(HtmlFilePath);
-    		
-    		if(f.isDirectory())
-    		{
-    			throw new IllegalArgumentException("The target file \"" + args[1] + "\" is not a valid file.");
-    		} 
-    		
-    	} catch (Exception e) {
-    		throw new IllegalArgumentException("The target file \"" + args[1] + "\" is invalid. " + e.getMessage());
-    	}
-    	
-    	
-    	// argument inputs
-    	try
-    	{
-    		XsltFilePath = normalizePath(args[2]);
-    		File f = new File(XsltFilePath);
-    		
-    		if(!f.exists())
-    		{
-    			throw new IllegalArgumentException("The transform (xslt) file \"" + args[2] + "\" does not exist.");
-    		} else if (f.isDirectory()) {
-    			throw new IllegalArgumentException("The transform (xslt) file \"" + args[2] + "\" is not a valid file.");
-    		}
-    		
-    	} catch (Exception e) {
-    		throw new IllegalArgumentException("The transform file \"" + args[2] + "\" is invalid. " + e.getMessage());
-    	}
- 
-		// build xml file path
-		String HtmlFileBaseName = FilenameUtils.getBaseName(HtmlFilePath);
-		String HtmlFolderPath = FilenameUtils.getFullPath(HtmlFilePath);
-		String XmlFileName = HtmlFileBaseName + ".xml";		
-		String XmlFilePath = FilenameUtils.concat(HtmlFolderPath, XmlFileName);
-
-		
+		    					
 		// populate the project structure
 		Project project = new Project(getDocumentJsonObject(JsonFilePath), JsonFilePath);
 		
@@ -103,14 +87,48 @@ public class Application {
 		project.populateXmlElement(doc);
 		
 		// generate the html document
-		Builder.transformXml(doc, XsltFilePath, HtmlFilePath);
+		Builder.transformXml(doc, XsltFilePath, TargetFilePath);
 		
 		// generate the xml document
-		Builder.saveXml(doc, XmlFilePath);
-		
-		
-		
+		if (generateXml == true)
+		{
+			// build xml file path			
+			if(XmlFilePath == null)
+			{
+				String TargetFileBaseName = FilenameUtils.getBaseName(TargetFilePath);
+				String TargetFolderPath = FilenameUtils.getFullPath(TargetFilePath);
+				String XmlFileName = TargetFileBaseName + ".xml";	
+				XmlFilePath = FilenameUtils.concat(TargetFolderPath, XmlFileName);
+			}
+			
+			Builder.saveXml(doc, XmlFilePath);
+		}	
 	}
+    
+    private static String getOptionFilePath(String context, String path)
+    {
+    	
+    	String resultPath = null;
+    	
+    	// argument inputs
+    	try
+    	{
+    		resultPath = normalizePath(path);
+    		File f = new File(resultPath);
+    		
+    		if(!f.exists())
+    		{
+    			throw new IllegalArgumentException("The " + context + " file \"" + path + "\" does not exist.");
+    		} else if (f.isDirectory()) {
+    			throw new IllegalArgumentException("The " + context + " file \"" + path + "\" is not a valid file.");
+    		} else {
+    			return resultPath;
+    		}
+    	} catch (Exception e) {
+    		throw new IllegalArgumentException("The " + context + " file \"" + path + "\" is invalid. " + e.getMessage());
+    	}
+    	
+    }
 
     private static String normalizePath(String path)
     {
