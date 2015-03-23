@@ -31,11 +31,16 @@ public class EnumLiteral extends ElementAbstract {
 		
 		
 		// spawn the top element
-		Element childElement = doc.createElement("attribute");
+		Element childElement = doc.createElement("enumliteral");
 		childElement.setAttribute("id",this.id);
-		childElement.setAttribute("class-id",this.parentRefId);
+		childElement.setAttribute("enum-id",this.parentRefId);
 		childElement.setAttribute("parent-ref-id",this.parentRefId);
 		
+
+		// add element
+		Element newElement1 = doc.createElement("name");
+		newElement1.appendChild(doc.createTextNode(this.name));
+		childElement.appendChild(newElement1);
 		
 		// add element
 		Element newElement2 = doc.createElement("documentation");

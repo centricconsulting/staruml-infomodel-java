@@ -52,7 +52,7 @@ public class Enum extends ElementAbstract {
 		Document doc = parentElement.getOwnerDocument();
 		
 		// spawn the top element
-		Element childElement = doc.createElement("class");
+		Element childElement = doc.createElement("enum");
 		childElement.setAttribute("id",this.id);
 		childElement.setAttribute("model-id",this.parentRefId);
 		childElement.setAttribute("parent-ref-id",this.parentRefId);

@@ -67,21 +67,6 @@ public class Class extends ElementAbstract {
 			}
 		}
 		
-		// populate enumerations
-		JsonResults = json.getJsonArray("enumerations");
-				
-		if (JsonResults != null)
-		{		
-			for(n = 0; n < JsonResults.size(); n++)
-			{
-				JsonObject JsonResult = JsonResults.getJsonObject(n);
-				
-				if(JsonResult.getString("_type").equals("UMLEnumeration"))
-				{
-					this.Enums.add(new Enum(JsonResult));
-				}
-			}
-		}
 		
 		// populate associations
 		JsonResults = json.getJsonArray("ownedElements");
@@ -95,6 +80,10 @@ public class Class extends ElementAbstract {
 				if(JsonResult.getString("_type").equals("UMLAssociation"))
 				{
 					this.Associations.add(new Association(JsonResult));
+				}
+				else if(JsonResult.getString("_type").equals("UMLEnumeration"))
+				{
+					this.Enums.add(new Enum(JsonResult));
 				}
 			}
 		}

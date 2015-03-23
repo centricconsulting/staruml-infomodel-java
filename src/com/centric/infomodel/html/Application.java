@@ -102,7 +102,9 @@ public class Application {
 			}
 			
 			Builder.saveXml(doc, XmlFilePath);
-		}	
+		}
+		
+		System.out.println(getXmlFromDocument(doc));
 	}
     
     private static String getOptionFilePath(String context, String path, boolean fileMustExist)
