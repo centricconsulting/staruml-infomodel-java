@@ -50,7 +50,7 @@ public class Application {
     		
     		if(args[n].equals("-p"))
     		{
-       			JsonFilePath = Application.getOptionFilePath("source", args[n+1], true);       			
+       			JsonFilePath = Application.getOptionFilePath("StarUML JSON project", args[n+1], true);       			
     			n++;  // advance the arg counter
     			
     		} else if(args[n].equals("-t"))
@@ -75,7 +75,21 @@ public class Application {
     		}
     		    		
     	}
-		    					
+    	
+    	if(JsonFilePath == null)
+    	{
+    		throw new IllegalArgumentException("The StarUML JSON project file (-p command line option) was not specified.");	
+    	} else 
+    		if (TargetFilePath == null)
+    	{
+    		throw new IllegalArgumentException("The target file (-t command line option) was not specified.");
+    	} else 
+    		if (XsltFilePath == null)
+    	{
+    		throw new IllegalArgumentException("The xslt template file (-x command line option) was not specified.");
+    	}
+    	
+    	
 		// populate the project structure
 		Project project = new Project(getDocumentJsonObject(JsonFilePath), JsonFilePath);
 		
@@ -104,7 +118,7 @@ public class Application {
 			Builder.saveXml(doc, XmlFilePath);
 		}
 		
-		System.out.println(getXmlFromDocument(doc));
+		//System.out.println(getXmlFromDocument(doc));
 	}
     
     private static String getOptionFilePath(String context, String path, boolean fileMustExist)

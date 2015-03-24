@@ -28,6 +28,8 @@ public class Builder {
         TransformerFactory factory = TransformerFactory.newInstance();                
 		
 		Transformer transformer = factory.newTransformer(xsltStreamSource);
+		
+		Builder.setTransformerProperties(transformer);
 		transformer.transform(xmlSource, new StreamResult(new File(targetHtmlFilePath)));
 	
 	}
@@ -41,14 +43,19 @@ public class Builder {
 		DOMSource xmlSource = new DOMSource(xmlDocument);
 		StreamResult streamResult =  new StreamResult(new File(targetXmlFilePath));
 		
+		Builder.setTransformerProperties(transformer);		
+		transformer.transform(xmlSource, streamResult);
+		
+	}
+	
+	public static void setTransformerProperties(Transformer transformer)
+	{
+	
        // adds new line between each element
        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
        
        // adds indenting based on xml structure
        transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "2");
-		
-		transformer.transform(xmlSource, streamResult);
-		
 	}
 	
 }

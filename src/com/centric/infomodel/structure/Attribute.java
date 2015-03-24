@@ -12,6 +12,8 @@ public class Attribute extends ElementAbstract {
 	public boolean isUnique;
 	public String multiplicity;
 	public String dataType;
+	public boolean isID;
+	public boolean isDerived;
 	
 	public Attribute(JsonObject json)
 	{
@@ -28,6 +30,8 @@ public class Attribute extends ElementAbstract {
 		this.documentation = json.getString("documentation", ElementAbstract.EMPTY_STRING);
 		this.parentRefId = ElementAbstract.getParentRef(json);
 		this.isUnique= json.getBoolean("isUnique", false);
+		this.isID= json.getBoolean("isID", false);
+		this.isDerived= json.getBoolean("isDerived", false);
 		this.multiplicity = json.getString("multiplicity","1");
 		this.stereotypeName = json.getString("sterotype",ElementAbstract.EMPTY_STRING);
 		this.stereotypeId = ElementAbstract.getRef(json, "stereotype");
@@ -65,7 +69,22 @@ public class Attribute extends ElementAbstract {
 		// add element
 		Element newElement3 = doc.createElement("type");
 		newElement3.appendChild(doc.createTextNode(this.dataType));
-		childElement.appendChild(newElement3);		
+		childElement.appendChild(newElement3);
+		
+		// add element
+		newElement3 = doc.createElement("is-unique");
+		newElement3.appendChild(doc.createTextNode(ElementAbstract.getBooleanString(this.isUnique)));
+		childElement.appendChild(newElement3);	
+		
+		// add element
+		newElement3 = doc.createElement("is-identifier");
+		newElement3.appendChild(doc.createTextNode(ElementAbstract.getBooleanString(this.isID)));
+		childElement.appendChild(newElement3);
+		
+		// add element
+		newElement3 = doc.createElement("is-derived");
+		newElement3.appendChild(doc.createTextNode(ElementAbstract.getBooleanString(this.isDerived)));
+		childElement.appendChild(newElement3);			
 		
 
 		// add element
