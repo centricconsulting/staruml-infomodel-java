@@ -38,7 +38,7 @@ public class Association extends ElementAbstract {
 		JsonObject JsonResult;
 		JsonResult = json.getJsonObject("end1");
 		
-		this.end1ClassId = ElementAbstract.getParentRef(JsonResult);
+		this.end1ClassId = ElementAbstract.getRef(JsonResult, "reference");
 		this.end1Aggregation = JsonResult.getString("aggregation", ElementAbstract.EMPTY_STRING);
 		this.end1Multiplicity = JsonResult.getString("multiplicity", "1");
 		this.end1Name = JsonResult.getString("name", ElementAbstract.EMPTY_STRING);
@@ -46,7 +46,7 @@ public class Association extends ElementAbstract {
 		
 		JsonResult = json.getJsonObject("end2");
 		
-		this.end2ClassId = ElementAbstract.getParentRef(JsonResult);
+		this.end2ClassId = ElementAbstract.getRef(JsonResult, "reference");
 		this.end2Aggregation = JsonResult.getString("aggregation", ElementAbstract.EMPTY_STRING);
 		this.end2Multiplicity = JsonResult.getString("multiplicity", "1");
 		this.end2Name = JsonResult.getString("name", ElementAbstract.EMPTY_STRING);
