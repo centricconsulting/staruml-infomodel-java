@@ -36,14 +36,17 @@ public class Diagram extends ElementAbstract {
 
 		
 		JsonArray JsonResults = json.getJsonArray("ownedViews");
-				
-		for(int n = 0; n < JsonResults.size(); n++)
-		{
-			JsonObject JsonResult = JsonResults.getJsonObject(n);
-			
-			if(JsonResult.getString("_type").equals("UMLClassView"))
+		
+		if (JsonResults != null)
+		{		
+			for(int n = 0; n < JsonResults.size(); n++)
 			{
-				this.ContainedClassIds.add(ElementAbstract.getRef(JsonResult, "model"));
+				JsonObject JsonResult = JsonResults.getJsonObject(n);
+				
+				if(JsonResult.getString("_type").equals("UMLClassView"))
+				{
+					this.ContainedClassIds.add(ElementAbstract.getRef(JsonResult, "model"));
+				}
 			}
 		}
 			
