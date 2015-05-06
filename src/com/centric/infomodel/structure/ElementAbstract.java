@@ -37,7 +37,7 @@ public abstract class ElementAbstract {
 		}
 		
 	}
-	
+		
 	public static String getParentRef(JsonObject GenericJsonObject)
 	{
 		return getRef(GenericJsonObject, "_parent", ElementAbstract.EMPTY_STRING);

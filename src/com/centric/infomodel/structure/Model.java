@@ -37,19 +37,23 @@ public class Model extends ElementAbstract {
 		
 		JsonResults = json.getJsonArray("ownedElements");
 		
-		for(int n = 0; n < JsonResults.size(); n++)
+		if (JsonResults != null)
 		{
-			JsonObject JsonResult = JsonResults.getJsonObject(n);
-			
-			if(JsonResult.getString("_type").equals("UMLClassDiagram"))
+		
+			for(int n = 0; n < JsonResults.size(); n++)
 			{
-				this.Diagrams.add(new Diagram(JsonResult));
+				JsonObject JsonResult = JsonResults.getJsonObject(n);
 				
-			} else if(JsonResult.getString("_type").equals("UMLClass"))
-			{
-				this.Classes.add(new Class(JsonResult));
+				if(JsonResult.getString("_type").equals("UMLClassDiagram"))
+				{
+					this.Diagrams.add(new Diagram(JsonResult));
+					
+				} else if(JsonResult.getString("_type").equals("UMLClass"))
+				{
+					this.Classes.add(new Class(JsonResult));
+				}
 			}
-		}	
+		}
 	}
 	
 	public void populateXmlElement(Element parentElement)

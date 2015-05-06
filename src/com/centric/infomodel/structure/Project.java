@@ -119,7 +119,10 @@ public class Project  extends ElementAbstract {
 		// append models
 		for(int n = 0; n < this.Models.size(); n++)
 		{
-			this.Models.get(n).populateXmlElement(childElement);
+			if(this.Models.get(n).Classes.size()>0)
+			{
+				this.Models.get(n).populateXmlElement(childElement);
+			}
 		}
 	
 		doc.appendChild(childElement);
