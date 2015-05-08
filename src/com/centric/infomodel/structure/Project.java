@@ -51,13 +51,16 @@ public class Project  extends ElementAbstract {
 
 		JsonArray JsonResults = json.getJsonArray("ownedElements");
 		
-		for(int n = 0; n < JsonResults.size(); n++)
-		{
-			JsonObject JsonResult = JsonResults.getJsonObject(n);
-			
-			if(JsonResult.getString("_type").equals("UMLModel"))
+		if(JsonResults != null)
+		{		
+			for(int n = 0; n < JsonResults.size(); n++)
 			{
-				this.Models.add(new Model(JsonResult));
+				JsonObject JsonResult = JsonResults.getJsonObject(n);
+				
+				if(JsonResult.getString("_type").equals("UMLModel"))
+				{
+					this.Models.add(new Model(JsonResult));
+				}
 			}
 		}
 	}
