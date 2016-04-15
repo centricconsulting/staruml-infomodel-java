@@ -13,6 +13,7 @@ public class Class extends ElementAbstract {
 	
 	public List<Attribute> Attributes = new ArrayList<Attribute>();
 	public List<Operation> Operations = new ArrayList<Operation>();
+	public List<Reception> Receptions = new ArrayList<Reception>();
 	public List<Enum> Enums = new ArrayList<Enum>();
 	public List<Association> Associations = new ArrayList<Association>();
 	
@@ -66,6 +67,23 @@ public class Class extends ElementAbstract {
 				}
 			}
 		}
+		
+
+		// populate receptions
+		JsonResults = json.getJsonArray("receptions");
+
+		if (JsonResults != null)
+		{		
+			for(n = 0; n < JsonResults.size(); n++)
+			{
+				JsonObject JsonResult = JsonResults.getJsonObject(n);
+				
+				if(JsonResult.getString("_type").equals("UMLReception"))
+				{
+					this.Receptions.add(new Reception(JsonResult));
+				}
+			}
+		}		
 		
 		
 		// populate associations
@@ -127,13 +145,19 @@ public class Class extends ElementAbstract {
 			this.Operations.get(n).populateXmlElement(childElement);
 		}		
 		
+		
+		// populate operations xml
+		for(n = 0; n < this.Receptions.size(); n++)
+		{
+			this.Receptions.get(n).populateXmlElement(childElement);
+		}	
+		
 		// populate enum xml
 		for(n = 0; n < this.Enums.size(); n++)
 		{
 			this.Enums.get(n).populateXmlElement(childElement);
 		}
-		
-		
+				
 		// populate associations xml
 		for(n = 0; n < this.Associations.size(); n++)
 		{
