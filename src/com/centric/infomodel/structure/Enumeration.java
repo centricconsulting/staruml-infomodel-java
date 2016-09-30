@@ -9,11 +9,13 @@ import javax.json.JsonObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 
-public class Enum extends ElementAbstract {
+public class Enumeration extends ElementAbstract {
 
+	public String stereotypeId;
+	
 	public List<EnumLiteral> EnumLiterals = new ArrayList<EnumLiteral>();	
 	
-	public Enum(JsonObject json)
+	public Enumeration(JsonObject json)
 	{
 		populate(json);  	
 	}
@@ -28,6 +30,8 @@ public class Enum extends ElementAbstract {
 		// optional
 		this.documentation = json.getString("documentation", ElementAbstract.EMPTY_STRING);
 		this.parentRefId = ElementAbstract.getParentRef(json);
+		
+		this.stereotypeId = ElementAbstract.getRef(json, "stereotype");
 		
 		// populate associations
 		JsonArray JsonResults = json.getJsonArray("literals");
@@ -56,6 +60,7 @@ public class Enum extends ElementAbstract {
 		childElement.setAttribute("id",this.id);
 		childElement.setAttribute("model-id",this.parentRefId);
 		childElement.setAttribute("parent-ref-id",this.parentRefId);
+		childElement.setAttribute("stereotype-class-id",this.stereotypeId);		
 		
 
 		// add element

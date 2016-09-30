@@ -15,6 +15,7 @@ public class Diagram extends ElementAbstract {
 	public boolean isVisible = false;
 	
 	public List<String> ContainedClassIds = new ArrayList<String>();
+	public List<String> ContainedEnumIds = new ArrayList<String>();
 	
 	public Diagram(JsonObject json)
 	{
@@ -45,7 +46,11 @@ public class Diagram extends ElementAbstract {
 				
 				if(JsonResult.getString("_type").equals("UMLClassView"))
 				{
-					this.ContainedClassIds.add(ElementAbstract.getRef(JsonResult, "model"));
+					this.ContainedClassIds.add(ElementAbstract.getRef(JsonResult, "model"));					
+				}
+				else if(JsonResult.getString("_type").equals("UMLEnumerationView"))
+				{
+					this.ContainedEnumIds.add(ElementAbstract.getRef(JsonResult, "model"));
 				}
 			}
 		}
@@ -94,9 +99,17 @@ public class Diagram extends ElementAbstract {
 			newElementX.setAttribute("class-id", this.ContainedClassIds.get(n));	
 			childElement.appendChild(newElementX);
 		}
+				
 		
+		for(int n = 0; n < this.ContainedEnumIds.size(); n++)
+		{
+			newElementX = doc.createElement("diagram-enum");
+			newElementX.setAttribute("enum-id", this.ContainedClassIds.get(n));	
+			childElement.appendChild(newElementX);
+		}
 		
 		parentElement.appendChild(childElement);
+		
 	}
 	
 }

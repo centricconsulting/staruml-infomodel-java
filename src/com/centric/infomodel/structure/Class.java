@@ -14,7 +14,6 @@ public class Class extends ElementAbstract {
 	public List<Attribute> Attributes = new ArrayList<Attribute>();
 	public List<Operation> Operations = new ArrayList<Operation>();
 	public List<Reception> Receptions = new ArrayList<Reception>();
-	public List<Enum> Enums = new ArrayList<Enum>();
 	public List<Association> Associations = new ArrayList<Association>();
 	
 	public Class(JsonObject json)
@@ -99,10 +98,7 @@ public class Class extends ElementAbstract {
 				{
 					this.Associations.add(new Association(JsonResult));
 				}
-				else if(JsonResult.getString("_type").equals("UMLEnumeration"))
-				{
-					this.Enums.add(new Enum(JsonResult));
-				}
+				
 			}
 		}
 						
@@ -152,11 +148,6 @@ public class Class extends ElementAbstract {
 			this.Receptions.get(n).populateXmlElement(childElement);
 		}	
 		
-		// populate enum xml
-		for(n = 0; n < this.Enums.size(); n++)
-		{
-			this.Enums.get(n).populateXmlElement(childElement);
-		}
 				
 		// populate associations xml
 		for(n = 0; n < this.Associations.size(); n++)
