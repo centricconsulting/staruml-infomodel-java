@@ -104,7 +104,7 @@ public class Diagram extends ElementAbstract {
 		for(int n = 0; n < this.ContainedEnumIds.size(); n++)
 		{
 			newElementX = doc.createElement("diagram-enum");
-			newElementX.setAttribute("enum-id", this.ContainedClassIds.get(n));	
+			newElementX.setAttribute("enum-id", this.ContainedEnumIds.get(n));	
 			childElement.appendChild(newElementX);
 		}
 		
