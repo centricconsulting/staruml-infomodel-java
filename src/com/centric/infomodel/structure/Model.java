@@ -17,6 +17,7 @@ public class Model extends ElementAbstract {
 	public List<Diagram> Diagrams = new ArrayList<Diagram>();
 	public List<Class> Classes = new ArrayList<Class>();
 	public List<Enumeration> Enumerations = new ArrayList<Enumeration>();
+	public List<Model> Models = new ArrayList<Model>();
 	
 	public Model(JsonObject json)
 	{
@@ -52,9 +53,14 @@ public class Model extends ElementAbstract {
 				} else if(JsonResult.getString("_type").equals("UMLClass"))
 				{
 					this.Classes.add(new Class(JsonResult));
+					
 				} else if(JsonResult.getString("_type").equals("UMLEnumeration"))
 				{
 					this.Enumerations.add(new Enumeration(JsonResult));
+					
+				} else if(JsonResult.getString("_type").equals("UMLSubsystem"))
+				{
+					this.Models.add(new Model(JsonResult));
 				}
 			}
 		}
@@ -82,6 +88,11 @@ public class Model extends ElementAbstract {
 		newElement2.appendChild(doc.createTextNode(this.documentation));
 		childElement.appendChild(newElement2);		
 		
+
+		for(int n = 0; n < this.Models.size(); n++)
+		{
+			this.Models.get(n).populateXmlElement(childElement);
+		}
 		
 		for(int n = 0; n < this.Diagrams.size(); n++)
 		{

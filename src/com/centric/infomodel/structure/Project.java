@@ -49,18 +49,18 @@ public class Project  extends ElementAbstract {
 	    this.copyright = json.getString("copyright", ElementAbstract.EMPTY_STRING);	
 	    this.version = json.getString("version", ElementAbstract.EMPTY_STRING);
 
+	    // top-level ownedElements in the document
 		JsonArray JsonResults = json.getJsonArray("ownedElements");
 		
 		if(JsonResults != null)
 		{		
 			for(int n = 0; n < JsonResults.size(); n++)
-			{
-				JsonObject JsonResult = JsonResults.getJsonObject(n);
-				
-				if(JsonResult.getString("_type").equals("UMLModel"))
+			{				
+				// retrieve and iterate through all the models
+				if(JsonResults.getJsonObject(n).getString("_type").equals("UMLModel"))
 				{
-					this.Models.add(new Model(JsonResult));
-				}
+					this.Models.add(new Model(JsonResults.getJsonObject(n)));
+				}		
 			}
 		}
 	}
@@ -122,10 +122,7 @@ public class Project  extends ElementAbstract {
 		// append models
 		for(int n = 0; n < this.Models.size(); n++)
 		{
-			if(this.Models.get(n).Classes.size()>0)
-			{
-				this.Models.get(n).populateXmlElement(childElement);
-			}
+			this.Models.get(n).populateXmlElement(childElement);
 		}
 	
 		doc.appendChild(childElement);
