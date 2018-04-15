@@ -11,7 +11,8 @@ public class Attribute extends ElementAbstract {
 	public String stereotypeId;
 	public boolean isUnique;
 	public String multiplicity;
-	public String dataType;
+	public String typeId;
+	public String typeName;
 	public boolean isID;
 	public boolean isDerived;
 	
@@ -35,7 +36,8 @@ public class Attribute extends ElementAbstract {
 		this.multiplicity = json.getString("multiplicity","1");
 		this.stereotypeName = json.getString("sterotype",ElementAbstract.EMPTY_STRING);
 		this.stereotypeId = ElementAbstract.getRef(json, "stereotype");
-		this.dataType = json.getString("type",ElementAbstract.EMPTY_STRING);
+		this.typeName = json.getString("type",ElementAbstract.EMPTY_STRING);
+		this.typeId = ElementAbstract.getRef(json, "type");
 		
 	}
 	
@@ -51,6 +53,7 @@ public class Attribute extends ElementAbstract {
 		childElement.setAttribute("class-id",this.parentRefId);
 		childElement.setAttribute("parent-ref-id",this.parentRefId);
 		childElement.setAttribute("stereotype-class-id",this.stereotypeId);
+		childElement.setAttribute("type-class-id",this.typeId);
 		
 
 		// add element
@@ -65,10 +68,9 @@ public class Attribute extends ElementAbstract {
 		childElement.appendChild(newElement2);
 				
 		
-		
 		// add element
-		Element newElement3 = doc.createElement("type");
-		newElement3.appendChild(doc.createTextNode(this.dataType));
+		Element newElement3 = doc.createElement("type-name");
+		newElement3.appendChild(doc.createTextNode(this.typeName));
 		childElement.appendChild(newElement3);
 		
 		// add element
