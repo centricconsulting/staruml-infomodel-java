@@ -1,6 +1,15 @@
 package com.centric.infomodel.structure;
 
 import javax.json.JsonObject;
+import javax.json.JsonString;
+import javax.json.JsonArray;
+import javax.json.Json;
+import javax.json.JsonValue;
+
+import java.util.List;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.ArrayList;
 
 import org.apache.commons.validator.routines.UrlValidator;
 
@@ -37,26 +46,46 @@ public abstract class ElementAbstract {
 		}
 		
 	}
-		
+	
 	public static String getParentRef(JsonObject GenericJsonObject)
 	{
 		return getRef(GenericJsonObject, "_parent", ElementAbstract.EMPTY_STRING);
 	}
 	
-	public static String getRef(JsonObject GenericJsonObject, String refLabel)
+
+	public static String getRef(JsonObject object, String refLabel)
 	{
-		return getRef(GenericJsonObject, refLabel, ElementAbstract.EMPTY_STRING);
+		return getRef(object, refLabel, ElementAbstract.EMPTY_STRING);
 	}
 	
-	public static String getRef(JsonObject GenericJsonObject, String refLabel, String defaultRef)
+	public static String getRef(JsonObject object, String refLabel, String defaultRef)
 	{
 		try
 		{
-			JsonObject RefJsonObject = GenericJsonObject.getJsonObject(refLabel);	
+			JsonObject RefJsonObject = object.getJsonObject(refLabel);	
 		
-			if (RefJsonObject != null)
+			return getRefValue(RefJsonObject, defaultRef);
+		
+		} catch (Exception e)
+		{
+			return defaultRef;
+		}
+		
+	}
+	
+	public static String getRefValue(JsonObject object)
+	{
+		return getRefValue(object, ElementAbstract.EMPTY_STRING);
+	}
+	
+	public static String getRefValue(JsonObject object, String defaultRef)
+	{
+		try
+		{
+		
+			if (object != null)
 			{
-				return RefJsonObject.getString("$ref", defaultRef);
+				return object.getString("$ref", defaultRef);
 			} else {
 				return defaultRef;
 			}
@@ -66,9 +95,6 @@ public abstract class ElementAbstract {
 			return defaultRef;
 		}
 		
-		
-		
 	}
-	
 
 }

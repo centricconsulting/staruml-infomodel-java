@@ -9,6 +9,7 @@ import java.io.StringWriter;
 import javax.json.Json;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
+
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -21,6 +22,8 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.io.FilenameUtils;
 import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 
 import com.centric.infomodel.structure.Project;
 
@@ -98,6 +101,7 @@ public class Application {
 		DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 		Document doc = docBuilder.newDocument();		
 		
+		// start population
 		project.populateXmlElement(doc);
 		
 		// generate the html document

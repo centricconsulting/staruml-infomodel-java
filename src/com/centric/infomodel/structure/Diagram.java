@@ -65,38 +65,41 @@ public class Diagram extends ElementAbstract {
 		// spawn the top element
 		Element childElement = doc.createElement("diagram");
 		childElement.setAttribute("id",this.id);
-		childElement.setAttribute("model-id",this.parentRefId);
-		childElement.setAttribute("parent-ref-id",this.parentRefId);
+		
+		// flags
+		childElement.setAttribute("is-default", ElementAbstract.getBooleanString(this.isDefault));
+		childElement.setAttribute("is-visible", ElementAbstract.getBooleanString(this.isVisible));
+		
+		childElement.setAttribute("parent-object-id",this.parentRefId);
 		
 
 		// add element
 		Element newElement1 = doc.createElement("name");
-		newElement1.appendChild(doc.createTextNode(this.name));
+		newElement1.appendChild(doc.createCDATASection(this.name));
 		childElement.appendChild(newElement1);
 		
 		
 		// add element
-		Element newElement2 = doc.createElement("documentation");
-		newElement2.setAttribute("is-url", ElementAbstract.isUrlString(this.documentation));
-		newElement2.appendChild(doc.createTextNode(this.documentation));
-		childElement.appendChild(newElement2);
+		if(this.documentation.length() > 0)
+		{
+			Element newElement2 = doc.createElement("description");
+
+			if(ElementAbstract.isUrlString(this.documentation).equals("true"))
+			{
+				newElement2.setAttribute("is-url", "true");
+			}			
+			
+			newElement2.appendChild(doc.createCDATASection(this.documentation));
+			childElement.appendChild(newElement2);
+		}
 		
-		// add element
-		newElement2 = doc.createElement("is-default");
-		newElement2.appendChild(doc.createTextNode(ElementAbstract.getBooleanString(this.isDefault)));
-		childElement.appendChild(newElement2);		
-		
-		// add element
-		newElement2 = doc.createElement("is-visible");
-		newElement2.appendChild(doc.createTextNode(ElementAbstract.getBooleanString(this.isVisible)));
-		childElement.appendChild(newElement2);		
-		
+
 		Element newElementX;
 		
 		for(int n = 0; n < this.ContainedClassIds.size(); n++)
 		{
-			newElementX = doc.createElement("diagram-class");
-			newElementX.setAttribute("class-id", this.ContainedClassIds.get(n));	
+			newElementX = doc.createElement("diagram-entity");
+			newElementX.setAttribute("entity-id", this.ContainedClassIds.get(n));	
 			childElement.appendChild(newElementX);
 		}
 				

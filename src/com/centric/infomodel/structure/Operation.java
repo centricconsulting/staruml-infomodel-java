@@ -1,5 +1,9 @@
 package com.centric.infomodel.structure;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.json.JsonArray;
 import javax.json.JsonObject;
 
 import org.apache.commons.validator.routines.UrlValidator;
@@ -27,10 +31,11 @@ public class Operation extends ElementAbstract {
 		// optional
 		this.documentation = json.getString("documentation", ElementAbstract.EMPTY_STRING);
 		this.parentRefId = ElementAbstract.getParentRef(json);
-		this.specification = json.getString("specification","1");
+		this.specification = json.getString("specification",ElementAbstract.EMPTY_STRING);
 		this.stereotypeName = json.getString("sterotype",ElementAbstract.EMPTY_STRING);
 		this.stereotypeId = ElementAbstract.getRef(json, "stereotype");
-		
+
+	
 	}
 	
 	public void populateXmlElement(Element parentElement)
@@ -40,48 +45,43 @@ public class Operation extends ElementAbstract {
 		
 		
 		// spawn the top element
-		Element childElement = doc.createElement("operation");
+		Element childElement = doc.createElement("measure");
 		childElement.setAttribute("id",this.id);
-		childElement.setAttribute("class-id",this.parentRefId);
-		childElement.setAttribute("parent-ref-id",this.parentRefId);
+		childElement.setAttribute("parent-object-id",this.parentRefId);
+		childElement.setAttribute("reference-object-id", this.stereotypeId);
 
 		// add element
 		Element newElement1 = doc.createElement("name");
-		newElement1.appendChild(doc.createTextNode(this.name));
+		newElement1.appendChild(doc.createCDATASection(this.name));
 		childElement.appendChild(newElement1);
 				
 		// add element
-		Element newElement2 = doc.createElement("documentation");
-		newElement2.setAttribute("is-url", ElementAbstract.isUrlString(this.documentation));
-		newElement2.appendChild(doc.createTextNode(this.documentation));
-		childElement.appendChild(newElement2);
-				
-
-		// add element
-		Element newElementST = doc.createElement("stereotype");
-		newElementST.setAttribute("class-id", this.stereotypeId);
-		
-		Element newElementName = doc.createElement("name");
-		newElementST.appendChild(newElementName);
-		newElementName .appendChild(doc.createTextNode(this.stereotypeName));
-		
-		childElement.appendChild(newElementST);
-
-		String isUrlString;
-		String[] schemes = {"http","https"};
-		UrlValidator urlValidator = new UrlValidator(schemes);
-		if (urlValidator.isValid(this.specification))
+		if(this.documentation.length() > 0)
 		{
-			isUrlString = "true";
-		} else {
-			isUrlString = "false";
-		}
+			Element newElement2 = doc.createElement("description");
+
+			if(ElementAbstract.isUrlString(this.documentation).equals("true"))
+			{
+				newElement2.setAttribute("is-url", "true");
+			}			
+			
+			newElement2.appendChild(doc.createCDATASection(this.documentation));
+			childElement.appendChild(newElement2);
+		}		
 		
 		// add element
-		Element newElement6 = doc.createElement("specification");
-		newElement6.setAttribute("is-url", isUrlString);
-		newElement6.appendChild(doc.createTextNode(this.specification));
-		childElement.appendChild(newElement6);
+		if(this.specification.length() > 0)
+		{
+			Element newElement6 = doc.createElement("specification");
+
+			if(ElementAbstract.isUrlString(this.specification).equals("true"))
+			{
+				newElement6.setAttribute("is-url", "true");
+			}			
+			
+			newElement6.appendChild(doc.createCDATASection(this.specification));
+			childElement.appendChild(newElement6);
+		}
 		
 		parentElement.appendChild(childElement);
 		

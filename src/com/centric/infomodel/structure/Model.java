@@ -35,13 +35,11 @@ public class Model extends ElementAbstract {
 		this.parentRefId = ElementAbstract.getParentRef(json);
 		
 		JsonArray JsonResults;
-
 		
 		JsonResults = json.getJsonArray("ownedElements");
 		
 		if (JsonResults != null)
 		{
-		
 			for(int n = 0; n < JsonResults.size(); n++)
 			{
 				JsonObject JsonResult = JsonResults.getJsonObject(n);
@@ -72,31 +70,27 @@ public class Model extends ElementAbstract {
 		Document doc = parentElement.getOwnerDocument();
 		
 		// spawn the top element
-		Element childElement = doc.createElement("model");
+		Element childElement = doc.createElement("subject");
 		childElement.setAttribute("id",this.id);
-		childElement.setAttribute("parent-ref-id",this.parentRefId);
-		childElement.setAttribute("project-id",this.parentRefId);
+		childElement.setAttribute("parent-object-id",this.parentRefId);
 		
 		// add element
 		Element newElement1 = doc.createElement("name");
-		newElement1.appendChild(doc.createTextNode(this.name));
+		newElement1.appendChild(doc.createCDATASection(this.name));
 		childElement.appendChild(newElement1);
 		
 		// add element
-		Element newElement2 = doc.createElement("documentation");
-		newElement2.setAttribute("is-url", ElementAbstract.isUrlString(this.documentation));
-		newElement2.appendChild(doc.createTextNode(this.documentation));
-		childElement.appendChild(newElement2);		
-		
+		if(this.documentation.length() > 0)
+		{
+			Element newElement2 = doc.createElement("description");
 
-		for(int n = 0; n < this.Models.size(); n++)
-		{
-			this.Models.get(n).populateXmlElement(childElement);
-		}
-		
-		for(int n = 0; n < this.Diagrams.size(); n++)
-		{
-			this.Diagrams.get(n).populateXmlElement(childElement);
+			if(ElementAbstract.isUrlString(this.documentation).equals("true"))
+			{
+				newElement2.setAttribute("is-url", "true");
+			}
+			
+			newElement2.appendChild(doc.createCDATASection(this.documentation));
+			childElement.appendChild(newElement2);		
 		}
 
 		for(int n = 0; n < this.Classes.size(); n++)
@@ -107,6 +101,16 @@ public class Model extends ElementAbstract {
 		for(int n = 0; n < this.Enumerations.size(); n++)
 		{
 			this.Enumerations.get(n).populateXmlElement(childElement);
+		}
+
+		for(int n = 0; n < this.Models.size(); n++)
+		{
+			this.Models.get(n).populateXmlElement(childElement);
+		}
+				
+		for(int n = 0; n < this.Diagrams.size(); n++)
+		{
+			this.Diagrams.get(n).populateXmlElement(childElement);
 		}
 		
 		parentElement.appendChild(childElement);

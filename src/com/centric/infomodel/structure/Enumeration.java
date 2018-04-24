@@ -58,21 +58,27 @@ public class Enumeration extends ElementAbstract {
 		// spawn the top element
 		Element childElement = doc.createElement("enum");
 		childElement.setAttribute("id",this.id);
-		childElement.setAttribute("model-id",this.parentRefId);
-		childElement.setAttribute("parent-ref-id",this.parentRefId);
-		childElement.setAttribute("stereotype-class-id",this.stereotypeId);		
-		
+		childElement.setAttribute("parent-object-id",this.parentRefId);
+		childElement.setAttribute("reference-object-id",this.stereotypeId);		
 
 		// add element
 		Element newElement1 = doc.createElement("name");
-		newElement1.appendChild(doc.createTextNode(this.name));
+		newElement1.appendChild(doc.createCDATASection(this.name));
 		childElement.appendChild(newElement1);
 				
 		// add element
-		Element newElement2 = doc.createElement("documentation");
-		newElement2.setAttribute("is-url", ElementAbstract.isUrlString(this.documentation));
-		newElement2.appendChild(doc.createTextNode(this.documentation));
-		childElement.appendChild(newElement2);
+		if(this.documentation.length() > 0)
+		{
+			Element newElement2 = doc.createElement("description");
+
+			if(ElementAbstract.isUrlString(this.documentation).equals("true"))
+			{
+				newElement2.setAttribute("is-url", "true");
+			}
+			
+			newElement2.appendChild(doc.createCDATASection(this.documentation));
+			childElement.appendChild(newElement2);
+		}
 		
 		// populate associations xml
 		for(int n = 0; n < this.EnumLiterals.size(); n++)

@@ -27,7 +27,9 @@ public class Project  extends ElementAbstract {
 	
 	public Project(JsonObject json, String jsonFilePath) throws ParserConfigurationException
 	{
-		populate(json, jsonFilePath);	   			
+		populate(json, jsonFilePath);	
+
+
 	}
 	
 	public void populate(JsonObject json, String jsonFilePath) throws ParserConfigurationException
@@ -69,14 +71,14 @@ public class Project  extends ElementAbstract {
 	{
 		
 		// spawn the top element
-		Element childElement = doc.createElement("project");
+		Element childElement = doc.createElement("domain");
 		
 		// add properties
 		childElement.setAttribute("id",this.id);
 		
 		// add element
 		Element newElement1 = doc.createElement("name");
-		newElement1.appendChild(doc.createTextNode(this.name));
+		newElement1.appendChild(doc.createCDATASection(this.name));
 		childElement.appendChild(newElement1);
 		
 		// add element
@@ -85,11 +87,18 @@ public class Project  extends ElementAbstract {
 		childElement.appendChild(newElementMD);		
 		
 		// add element
-		Element newElement2 = doc.createElement("documentation");
-		newElement2.setAttribute("is-url", ElementAbstract.isUrlString(this.documentation));
-		newElement2.appendChild(doc.createTextNode(this.documentation));
-		childElement.appendChild(newElement2);
-		
+		if(this.documentation.length() > 0)
+		{
+			Element newElement2 = doc.createElement("description");
+
+			if(ElementAbstract.isUrlString(this.documentation).equals("true"))
+			{
+				newElement2.setAttribute("is-url", "true");
+			}			
+			
+			newElement2.appendChild(doc.createCDATASection(this.documentation));
+			childElement.appendChild(newElement2);
+		}
 
 		// add element
 		Element newElement3 = doc.createElement("author");
@@ -118,6 +127,7 @@ public class Project  extends ElementAbstract {
 		newElementFN.appendChild(doc.createTextNode(this.fileName));
 		childElement.appendChild(newElementFN);		
 				
+		doc.appendChild(childElement);
 		
 		// append models
 		for(int n = 0; n < this.Models.size(); n++)
@@ -125,7 +135,6 @@ public class Project  extends ElementAbstract {
 			this.Models.get(n).populateXmlElement(childElement);
 		}
 	
-		doc.appendChild(childElement);
 			
 		
 	}

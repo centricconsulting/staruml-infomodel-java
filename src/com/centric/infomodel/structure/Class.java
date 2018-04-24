@@ -13,9 +13,8 @@ public class Class extends ElementAbstract {
 	
 	public List<Attribute> Attributes = new ArrayList<Attribute>();
 	public List<Operation> Operations = new ArrayList<Operation>();
-	public List<Reception> Receptions = new ArrayList<Reception>();
-	public List<Association> Associations = new ArrayList<Association>();
 	public List<Enumeration> Enumerations = new ArrayList<Enumeration>();
+	public List<Constraint> Constraints = new ArrayList<Constraint>();
 	
 	public Class(JsonObject json)
 	{
@@ -69,22 +68,6 @@ public class Class extends ElementAbstract {
 			}
 		}
 		
-
-		// populate receptions
-		JsonResults = json.getJsonArray("receptions");
-
-		if (JsonResults != null)
-		{		
-			for(n = 0; n < JsonResults.size(); n++)
-			{
-				JsonObject JsonResult = JsonResults.getJsonObject(n);
-				
-				if(JsonResult.getString("_type").equals("UMLReception"))
-				{
-					this.Receptions.add(new Reception(JsonResult));
-				}
-			}
-		}		
 		
 		
 		// populate associations
@@ -96,9 +79,10 @@ public class Class extends ElementAbstract {
 			{
 				JsonObject JsonResult = JsonResults.getJsonObject(n);
 				
-				if(JsonResult.getString("_type").equals("UMLAssociation"))
+
+				if(JsonResult.getString("_type").equals("UMLConstraint"))
 				{
-					this.Associations.add(new Association(JsonResult));
+					this.Constraints.add(new Constraint(JsonResult));
 				}
 				
 				if(JsonResult.getString("_type").equals("UMLEnumeration"))
@@ -117,24 +101,37 @@ public class Class extends ElementAbstract {
 		Document doc = parentElement.getOwnerDocument();
 		
 		// spawn the top element
-		Element childElement = doc.createElement("class");
+		Element childElement = doc.createElement("entity");
 		childElement.setAttribute("id",this.id);
-		childElement.setAttribute("model-id",this.parentRefId);
-		childElement.setAttribute("parent-ref-id",this.parentRefId);
+		childElement.setAttribute("parent-object-id",this.parentRefId);
 		
 
 		// add element
 		Element newElement1 = doc.createElement("name");
-		newElement1.appendChild(doc.createTextNode(this.name));
+		newElement1.appendChild(doc.createCDATASection(this.name));
 		childElement.appendChild(newElement1);
 				
 		// add element
-		Element newElement2 = doc.createElement("documentation");
-		newElement2.setAttribute("is-url", ElementAbstract.isUrlString(this.documentation));
-		newElement2.appendChild(doc.createTextNode(this.documentation));
-		childElement.appendChild(newElement2);
-				
+		if(this.documentation.length() > 0)
+		{
+			Element newElement2 = doc.createElement("description");
+			
+			if(ElementAbstract.isUrlString(this.documentation).equals("true"))
+			{
+				newElement2.setAttribute("is-url", "true");
+			}
+			
+			newElement2.appendChild(doc.createCDATASection(this.documentation));
+			childElement.appendChild(newElement2);
+		}		
 		int n;
+		
+
+		// populate constraints xml
+		for(n = 0; n < this.Constraints.size(); n++)
+		{
+			this.Constraints.get(n).populateXmlElement(childElement);
+		}	
 		
 		// populate attribute xml
 		for(n = 0; n < this.Attributes.size(); n++)
@@ -142,11 +139,6 @@ public class Class extends ElementAbstract {
 			this.Attributes.get(n).populateXmlElement(childElement);
 		}
 		
-		// populate attribute xml
-		for(n = 0; n < this.Enumerations.size(); n++)
-		{
-			this.Enumerations.get(n).populateXmlElement(childElement);
-		}		
 		
 		// populate operations xml
 		for(n = 0; n < this.Operations.size(); n++)
@@ -155,18 +147,13 @@ public class Class extends ElementAbstract {
 		}		
 		
 		
-		// populate operations xml
-		for(n = 0; n < this.Receptions.size(); n++)
+		// populate attribute xml
+		for(n = 0; n < this.Enumerations.size(); n++)
 		{
-			this.Receptions.get(n).populateXmlElement(childElement);
-		}	
-		
-				
-		// populate associations xml
-		for(n = 0; n < this.Associations.size(); n++)
-		{
-			this.Associations.get(n).populateXmlElement(childElement);
-		}
+			this.Enumerations.get(n).populateXmlElement(childElement);
+		}		
+
+
 		
 		parentElement.appendChild(childElement);
 	}
