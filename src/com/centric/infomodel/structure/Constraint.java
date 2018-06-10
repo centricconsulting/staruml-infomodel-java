@@ -25,6 +25,7 @@ public class Constraint extends ElementAbstract {
 		// note: associations do not require names
 		this.name = json.getString("name", ElementAbstract.EMPTY_STRING);
 		this.id = json.getString("_id", ElementAbstract.EMPTY_STRING);
+		this.visibility = json.getString("visibility", ElementAbstract.EMPTY_STRING);
 		
 		// optional
 		this.documentation = json.getString("documentation", ElementAbstract.EMPTY_STRING);
@@ -57,6 +58,7 @@ public class Constraint extends ElementAbstract {
 		Element childElement = doc.createElement("constraint");
 		childElement.setAttribute("id",this.id);
 		childElement.setAttribute("parent-object-id",this.parentRefId);
+		childElement.setAttribute("visibility", this.visibility);
 
 		if(this.specification.toLowerCase().contains("grain"))
 		{

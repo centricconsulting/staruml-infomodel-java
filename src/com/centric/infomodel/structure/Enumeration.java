@@ -26,6 +26,7 @@ public class Enumeration extends ElementAbstract {
 		// required
 		this.name = json.getString("name", ElementAbstract.UNKNOWN_STRING);
 		this.id = json.getString("_id", ElementAbstract.EMPTY_STRING);
+		this.visibility = json.getString("visibility", ElementAbstract.EMPTY_STRING);
 		
 		// optional
 		this.documentation = json.getString("documentation", ElementAbstract.EMPTY_STRING);
@@ -59,7 +60,8 @@ public class Enumeration extends ElementAbstract {
 		Element childElement = doc.createElement("enum");
 		childElement.setAttribute("id",this.id);
 		childElement.setAttribute("parent-object-id",this.parentRefId);
-		childElement.setAttribute("reference-object-id",this.stereotypeId);		
+		childElement.setAttribute("reference-object-id",this.stereotypeId);	
+		childElement.setAttribute("visibility", this.visibility);
 
 		// add element
 		Element newElement1 = doc.createElement("name");

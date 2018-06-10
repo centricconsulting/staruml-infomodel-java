@@ -27,6 +27,7 @@ public class Operation extends ElementAbstract {
 		// required
 		this.name = json.getString("name", ElementAbstract.UNKNOWN_STRING);
 		this.id = json.getString("_id", ElementAbstract.EMPTY_STRING);
+		this.visibility = json.getString("visibility", ElementAbstract.EMPTY_STRING);
 		
 		// optional
 		this.documentation = json.getString("documentation", ElementAbstract.EMPTY_STRING);
@@ -48,7 +49,13 @@ public class Operation extends ElementAbstract {
 		Element childElement = doc.createElement("measure");
 		childElement.setAttribute("id",this.id);
 		childElement.setAttribute("parent-object-id",this.parentRefId);
-		childElement.setAttribute("reference-object-id", this.stereotypeId);
+		childElement.setAttribute("visibility", this.visibility);
+		
+		
+		if(this.stereotypeId.length() > 0)
+		{
+			childElement.setAttribute("reference-object-id",this.stereotypeId);
+		}
 
 		// add element
 		Element newElement1 = doc.createElement("name");

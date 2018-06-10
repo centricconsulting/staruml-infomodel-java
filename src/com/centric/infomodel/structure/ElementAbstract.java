@@ -19,9 +19,11 @@ public abstract class ElementAbstract {
 	public String parentRefId;
 	public String name;
 	public String documentation;
+	public String visibility;
 	
 	public static final String EMPTY_STRING = "";
 	public static final String UNKNOWN_STRING = "Unknown";
+	public static final String MULTIPLICITY_ONE = "1";
 	
 	public static String getBooleanString(boolean value)
 	{

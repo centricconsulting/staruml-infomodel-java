@@ -17,6 +17,7 @@ public class EnumLiteral extends ElementAbstract {
 		// required
 		this.name = json.getString("name", ElementAbstract.UNKNOWN_STRING);
 		this.id = json.getString("_id", ElementAbstract.EMPTY_STRING);
+		this.visibility = json.getString("visibility", ElementAbstract.EMPTY_STRING);
 		
 		// optional
 		this.documentation = json.getString("documentation", ElementAbstract.EMPTY_STRING);
@@ -34,6 +35,7 @@ public class EnumLiteral extends ElementAbstract {
 		Element childElement = doc.createElement("instance");
 		childElement.setAttribute("id",this.id);
 		childElement.setAttribute("parent-object-id",this.parentRefId);
+		childElement.setAttribute("visibility", this.visibility);
 		
 
 		// add element

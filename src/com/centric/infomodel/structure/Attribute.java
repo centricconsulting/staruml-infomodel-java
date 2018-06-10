@@ -14,7 +14,7 @@ public class Attribute extends ElementAbstract {
 	public String typeName;
 	public boolean isID;
 	public boolean isDerived;
-	public boolean isLeaf;
+	public boolean isStatic;
 	
 	public Attribute(JsonObject json)
 	{
@@ -26,6 +26,7 @@ public class Attribute extends ElementAbstract {
 		// required
 		this.name = json.getString("name", ElementAbstract.UNKNOWN_STRING);
 		this.id = json.getString("_id", ElementAbstract.EMPTY_STRING);
+		this.visibility = json.getString("visibility", ElementAbstract.EMPTY_STRING);
 		
 		// optional
 		this.documentation = json.getString("documentation", ElementAbstract.EMPTY_STRING);
@@ -33,8 +34,8 @@ public class Attribute extends ElementAbstract {
 		this.isUnique= json.getBoolean("isUnique", false);
 		this.isID= json.getBoolean("isID", false);
 		this.isDerived= json.getBoolean("isDerived", false);
-		this.isLeaf= json.getBoolean("isLeaf", false);
-		this.multiplicity = json.getString("multiplicity",ElementAbstract.EMPTY_STRING);
+		this.isStatic= json.getBoolean("isStatic", false);
+		this.multiplicity = json.getString("multiplicity",ElementAbstract.MULTIPLICITY_ONE);	
 		this.stereotypeName = json.getString("sterotype",ElementAbstract.EMPTY_STRING);
 		this.stereotypeId = ElementAbstract.getRef(json, "stereotype");
 		this.typeName = json.getString("type",ElementAbstract.EMPTY_STRING);
@@ -47,16 +48,19 @@ public class Attribute extends ElementAbstract {
 			
 		Document doc = parentElement.getOwnerDocument();
 		
-		
 		// spawn the top element
 		Element childElement = doc.createElement("attribute");
 		childElement.setAttribute("id",this.id);
+		childElement.setAttribute("visibility", this.visibility);
+
 
 		// flags
 		if(this.isUnique) childElement.setAttribute("is-unique",ElementAbstract.getBooleanString(this.isUnique));
 		//childElement.setAttribute("is-identifier",ElementAbstract.getBooleanString(this.isID));
 		if(this.isDerived) childElement.setAttribute("is-derived",ElementAbstract.getBooleanString(this.isDerived));
-		if(this.isLeaf) childElement.setAttribute("is-operational",ElementAbstract.getBooleanString(this.isLeaf));
+		
+		// always include is-operational (inverse of isStatic)
+		childElement.setAttribute("is-operational",ElementAbstract.getBooleanString(!this.isStatic));
 
 		// other id references
 		childElement.setAttribute("parent-object-id",this.parentRefId);
@@ -93,14 +97,9 @@ public class Attribute extends ElementAbstract {
 		}	
 			
 		
-		// add element
-		// exclude the standard case where multiplicity is 1
-		if(!this.multiplicity.equals("1") && this.multiplicity.length() > 0)
-		{
-			Element newElement6 = doc.createElement("multiplicity");
-			newElement6.appendChild(doc.createTextNode(this.multiplicity));
-			childElement.appendChild(newElement6);
-		}
+		Element newElement6 = doc.createElement("multiplicity");
+		newElement6.appendChild(doc.createTextNode(this.multiplicity));
+		childElement.appendChild(newElement6);
 		
 		parentElement.appendChild(childElement);
 		
