@@ -25,7 +25,7 @@ public class Constraint extends ElementAbstract {
 		// note: associations do not require names
 		this.name = json.getString("name", ElementAbstract.EMPTY_STRING);
 		this.id = json.getString("_id", ElementAbstract.EMPTY_STRING);
-		this.visibility = json.getString("visibility", ElementAbstract.EMPTY_STRING);
+		this.visibility = json.getString("visibility", ElementAbstract.VISIBILITY_PUBLIC);
 		
 		// optional
 		this.documentation = json.getString("documentation", ElementAbstract.EMPTY_STRING);

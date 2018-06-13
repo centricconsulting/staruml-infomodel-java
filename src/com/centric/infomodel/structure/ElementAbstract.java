@@ -24,6 +24,7 @@ public abstract class ElementAbstract {
 	public static final String EMPTY_STRING = "";
 	public static final String UNKNOWN_STRING = "Unknown";
 	public static final String MULTIPLICITY_ONE = "1";
+	public static final String VISIBILITY_PUBLIC = "public";
 	
 	public static String getBooleanString(boolean value)
 	{

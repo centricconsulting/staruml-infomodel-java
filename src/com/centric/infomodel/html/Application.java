@@ -33,10 +33,10 @@ public class Application {
     	
     	/*
     	 * -p "{Source StarUML Project Json File Path}"
-    	 * -t "{Target File Path}"
     	 * -x "{Xslt File Path}"
-    	 * -g Inclusion will generate Xml file. Same name and folder path as target will be used unless explicit path is provided.
-    	 * -m (optional) Explicit "{Xml File Path}"
+    	 * -t "{Target File Path}"
+    	 * -m "{Xml File Path}"
+    	 * -g Instruction to generate Xml file path from Target file path
     	 */
     	
     	String
@@ -46,8 +46,11 @@ public class Application {
     		XmlFilePath = null;
     	
     	
-    	boolean generateXml = false;
+    	boolean generateXmlFile = false;
+    	boolean generateTargetFile = false;
+    	boolean buildXmlPath = false;
     	
+    	// acquire instructions from arguments
     	for (int n = 0; n < args.length; n++)
     	{
     		
@@ -56,42 +59,57 @@ public class Application {
        			JsonFilePath = Application.getOptionFilePath("StarUML JSON project", args[n+1], true);       			
     			n++;  // advance the arg counter
     			
-    		} else if(args[n].equals("-t"))
-    		{
-    			TargetFilePath = Application.getOptionFilePath("target", args[n+1], false);
-    			n++;  // advance the arg counter    			
-    			
     		} else if(args[n].equals("-x"))
     		{
     			XsltFilePath = Application.getOptionFilePath("xsl template", args[n+1], true);
     			n++;  // advance the arg counter
     		    		
+    		} else if(args[n].equals("-t"))
+    		{
+    			generateTargetFile = true;
+    			TargetFilePath = Application.getOptionFilePath("target", args[n+1], false);
+    			n++;  // advance the arg counter    			
+    			
+    		} else  if(args[n].equals("-m"))
+    		{
+    			generateXmlFile = true; // force the xml generation
+    			XmlFilePath = Application.getOptionFilePath("xml file", args[n+1], false);    			
+    			n++;  // advance the arg counter
+    			
     		} else if(args[n].equals("-g"))
     		{
-    			generateXml = true;
-    			
-    		} else if(args[n].equals("-m"))
-    		{
-    			XmlFilePath = Application.getOptionFilePath("xml file", args[n+1], false);    			
-    			generateXml = true; // force the xml generation
+    			buildXmlPath = true; // build the Xml path from the target
+    			generateXmlFile = true; // force the xml generation
     			n++;  // advance the arg counter
     		}
     		    		
     	}
     	
+    	// validate the minimum required paths have been provided
     	if(JsonFilePath == null)
     	{
     		throw new IllegalArgumentException("The StarUML JSON project file (-p command line option) was not specified.");	
-    	} else 
-    		if (TargetFilePath == null)
-    	{
-    		throw new IllegalArgumentException("The target file (-t command line option) was not specified.");
-    	} else 
-    		if (XsltFilePath == null)
+    	
+    	} else if (XsltFilePath == null)
     	{
     		throw new IllegalArgumentException("The xslt template file (-x command line option) was not specified.");
     	}
     	
+    	// build Xml path if instructed
+    	if(buildXmlPath == true)
+    	{
+    		if(TargetFilePath != null)
+			{
+				String TargetFileBaseName = FilenameUtils.getBaseName(TargetFilePath);
+				String TargetFolderPath = FilenameUtils.getFullPath(TargetFilePath);
+				String XmlFileName = TargetFileBaseName + ".xml";	
+				XmlFilePath = FilenameUtils.concat(TargetFolderPath, XmlFileName);
+				
+			} else
+			{
+				throw new IllegalArgumentException("The target file path (-t command line option) was not specified.");
+			}
+    	}
     	
 		// populate the project structure
 		Project project = new Project(getDocumentJsonObject(JsonFilePath), JsonFilePath);
@@ -101,28 +119,21 @@ public class Application {
 		DocumentBuilder docBuilder = docFactory.newDocumentBuilder();
 		Document doc = docBuilder.newDocument();		
 		
-		// start population
+		// inflate the project object model
 		project.populateXmlElement(doc);
 		
-		// generate the html document
-		Builder.transformXml(doc, XsltFilePath, TargetFilePath);
-		
-		// generate the xml document
-		if (generateXml == true)
-		{
-			// build xml file path			
-			if(XmlFilePath == null)
-			{
-				String TargetFileBaseName = FilenameUtils.getBaseName(TargetFilePath);
-				String TargetFolderPath = FilenameUtils.getFullPath(TargetFilePath);
-				String XmlFileName = TargetFileBaseName + ".xml";	
-				XmlFilePath = FilenameUtils.concat(TargetFolderPath, XmlFileName);
-			}
-			
+		// save the Xml file
+		if (generateXmlFile == true)
+		{			
 			Builder.saveXml(doc, XmlFilePath);
+		}		
+		
+		// generate the target file
+		if(generateTargetFile == true)
+		{
+			Builder.transformXml(doc, XsltFilePath, TargetFilePath);	
 		}
 		
-		//System.out.println(getXmlFromDocument(doc));
 	}
     
     private static String getOptionFilePath(String context, String path, boolean fileMustExist)
